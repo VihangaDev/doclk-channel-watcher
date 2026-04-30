@@ -1,0 +1,16 @@
+[Unit]
+Description=Doc.lk channel watcher
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/doclk-channel-watcher
+ExecStart=/usr/bin/node src/monitor.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+StandardOutput=append:%h/doclk-channel-watcher/logs/monitor.out.log
+StandardError=append:%h/doclk-channel-watcher/logs/monitor.err.log
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,41 @@
+{
+  "name": "doclk-channel-watcher",
+  "version": "1.0.0",
+  "description": "Monitor Doc.lk doctor channel pages and notify Telegram when appointments open.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "doclk-watch": "src/monitor.js"
+  },
+  "files": [
+    "src",
+    "launchd",
+    "systemd",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "check": "node src/monitor.js --once",
+    "start": "node src/monitor.js",
+    "telegram:test": "node src/verify-telegram.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "doclk",
+    "doc990",
+    "doctor",
+    "appointments",
+    "telegram",
+    "monitor"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {}
+}
