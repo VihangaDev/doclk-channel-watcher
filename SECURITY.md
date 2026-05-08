@@ -1,6 +1,6 @@
 # Security
 
-Do not open a public issue with real Telegram bot tokens, chat ids, or private server details.
+Do not open a public issue with real Telegram bot tokens, chat ids, private server details, or personal medical information.
 
 If a token is accidentally exposed:
 

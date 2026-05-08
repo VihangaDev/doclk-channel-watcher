@@ -8,6 +8,7 @@ Thanks for helping improve Doc.lk Channel Watcher.
 npm install
 npm test
 node src/monitor.js --once --dry-run --url https://www.doc.lk/channel/31317
+npm run web
 ```
 
 ## Pull Requests
@@ -16,6 +17,7 @@ node src/monitor.js --once --dry-run --url https://www.doc.lk/channel/31317
 - Add tests for parser or notification behavior changes.
 - Do not commit `.env`, logs, `.state`, or real Telegram credentials.
 - Use a reasonable polling interval when testing against Doc.lk.
+- Update documentation when behavior or configuration changes.
 
 ## Reporting Bugs
 

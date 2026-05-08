@@ -4,10 +4,19 @@
   "description": "Monitor Doc.lk doctor channel pages and notify Telegram when appointments open.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/VihangaDev/doclk-channel-watcher#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VihangaDev/doclk-channel-watcher.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VihangaDev/doclk-channel-watcher/issues"
+  },
   "bin": {
     "doclk-watch": "src/monitor.js"
   },
   "files": [
+    "docs",
     "public",
     "src",
     "launchd",
@@ -15,6 +24,7 @@
     "README.md",
     "LICENSE",
     "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
     "SECURITY.md"
   ],
   "scripts": {

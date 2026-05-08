@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a problem with monitoring, search, deployment, or alerts.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "v0.1.0 or commit hash"
+  - type: input
+    id: channel_url
+    attributes:
+      label: Doc.lk channel URL
+      placeholder: "https://www.doc.lk/channel/31317"
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Personal watcher
+        - Community website
+        - Both
+        - Not sure
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove tokens, chat ids, private URLs, and personal details before posting.
+      render: text
