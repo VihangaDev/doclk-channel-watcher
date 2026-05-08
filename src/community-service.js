@@ -41,6 +41,7 @@ function loadConfig(env = process.env) {
       Math.max(Number.isFinite(fetchTimeoutSeconds) ? fetchTimeoutSeconds : 20, 5) * 1000,
     telegramBotToken: env.TELEGRAM_BOT_TOKEN || "",
     telegramBotUsername: env.TELEGRAM_BOT_USERNAME || "",
+    telegramPollingEnabled: !/^false$/i.test(env.TELEGRAM_POLLING || ""),
   };
 }
 
@@ -148,7 +149,9 @@ async function main() {
     console.log(`Doc.lk Channel Watcher website listening on http://localhost:${config.port}`);
   });
 
-  void pollTelegram(config);
+  if (config.telegramPollingEnabled) {
+    void pollTelegram(config);
+  }
   void monitorSubscriptions(config);
 }
 

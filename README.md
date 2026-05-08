@@ -82,6 +82,7 @@ PORT=3000
 CHECK_INTERVAL_SECONDS=60
 TELEGRAM_BOT_TOKEN=123456:your-bot-token
 TELEGRAM_BOT_USERNAME=your_bot_username
+TELEGRAM_POLLING=true
 SUBSCRIPTION_FILE=.state/subscriptions.json
 COMMUNITY_STATE_FILE=.state/community-monitor-state.json
 ```
@@ -123,6 +124,7 @@ npm run telegram:test
 | `TELEGRAM_BOT_TOKEN` | No for dry runs, yes for alerts/subscriptions | | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | Personal mode only | | Telegram user/group chat id |
 | `TELEGRAM_BOT_USERNAME` | No | fetched from Telegram | Bot username used to create subscription links |
+| `TELEGRAM_POLLING` | No | `true` | Set to `false` only for local UI testing with a fake token |
 | `CHECK_INTERVAL_SECONDS` | No | `60` | Polling interval, minimum enforced value is 15 seconds |
 | `FETCH_TIMEOUT_SECONDS` | No | `20` | Timeout for loading a Doc.lk page |
 | `ERROR_NOTIFY_AFTER` | No | `3` | Consecutive failures before sending a Telegram warning in personal mode |

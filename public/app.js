@@ -177,9 +177,23 @@ function renderHospitalFilter(hospitals) {
   const allButton = createHospitalButton("all", `All (${searchResults.length})`);
   hospitalFilter.append(allButton);
 
-  for (const hospital of hospitals) {
-    hospitalFilter.append(createHospitalButton(hospital.name, `${hospital.name} (${hospital.count})`));
-  }
+  const select = document.createElement("select");
+  select.className = "hospital-select";
+  select.setAttribute("aria-label", "Select hospital");
+  select.innerHTML = [
+    `<option value="">Select hospital</option>`,
+    ...hospitals.map(
+      (hospital) =>
+        `<option value="${escapeHtml(hospital.name)}">${escapeHtml(`${hospital.name} (${hospital.count})`)}</option>`,
+    ),
+  ].join("");
+  select.value = selectedHospital === "all" ? "" : selectedHospital;
+  select.addEventListener("change", () => {
+    selectedHospital = select.value || "all";
+    renderHospitalFilter(getHospitalsFromResults(searchResults));
+    renderSearchResults(searchResults);
+  });
+  hospitalFilter.append(select);
 }
 
 function createHospitalButton(value, label) {
