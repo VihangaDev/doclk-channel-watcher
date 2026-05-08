@@ -10,10 +10,13 @@ const telegramLink = document.querySelector("#telegram-link");
 const serviceState = document.querySelector("#service-state");
 const subscriberCount = document.querySelector("#subscriber-count");
 const channelCount = document.querySelector("#channel-count");
+const telegramState = document.querySelector("#telegram-state");
+const serviceNote = document.querySelector("#service-note");
 
 let lastUrl = "";
 let searchResults = [];
 let selectedHospital = "all";
+let telegramConfigured = true;
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -126,11 +129,19 @@ async function refreshHealth() {
   try {
     const response = await fetch("/api/health");
     const payload = await response.json();
+    telegramConfigured = Boolean(payload.telegramConfigured);
     serviceState.textContent = payload.ok ? "Online" : "Issue";
     subscriberCount.textContent = String(payload.activeSubscriptions ?? 0);
     channelCount.textContent = String(payload.uniqueChannels ?? 0);
+    telegramState.textContent = telegramConfigured ? "Ready" : "Demo";
+    subscribeButton.disabled = !telegramConfigured;
+    subscribeButton.textContent = telegramConfigured ? "Telegram alerts" : "Demo only";
+    serviceNote.textContent = telegramConfigured
+      ? "Telegram subscriptions activate after the user opens the bot link."
+      : "This deployment can search and check sessions. Telegram subscriptions are not enabled.";
   } catch {
     serviceState.textContent = "Offline";
+    telegramState.textContent = "Unknown";
   }
 }
 
@@ -143,7 +154,7 @@ function renderReport(report) {
   summary.innerHTML = `
     <h2>${escapeHtml(report.doctorName || "Doctor")}</h2>
     <p>${escapeHtml([report.doctorTitle, report.hospital].filter(Boolean).join(" · "))}</p>
-    <p>${report.openCount}/${report.totalSessions} sessions open</p>
+    <p><strong>${report.openCount}/${report.totalSessions}</strong> sessions open</p>
   `;
   panel.append(summary);
 
@@ -163,7 +174,7 @@ function renderReport(report) {
         <strong>${escapeHtml(`${session.date || "Unknown date"} ${session.time || ""}`.trim())}</strong>
         <span>${escapeHtml(session.activeAppointments ? `Active appointments: ${session.activeAppointments}` : "Active appointments: unknown")}</span>
       </div>
-      <span class="badge">${escapeHtml(session.status || "Unknown")}</span>
+      <span class="badge">${escapeHtml(session.open ? "Bookable" : session.status || "Unknown")}</span>
     `;
     list.append(item);
   }

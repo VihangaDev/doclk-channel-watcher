@@ -58,6 +58,8 @@ export function createApp(config) {
       ok: true,
       activeSubscriptions: subscriptions.length,
       uniqueChannels: new Set(subscriptions.map((subscription) => subscription.url)).size,
+      telegramConfigured: Boolean(config.telegramBotToken),
+      telegramPolling: config.telegramPollingEnabled,
     });
   });
 

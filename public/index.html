@@ -19,44 +19,50 @@
             <p class="eyebrow">Doc.lk availability alerts</p>
             <h1 id="page-title">Channel Watcher</h1>
           </div>
+          <div class="header-actions" aria-label="Project links">
+            <a href="https://github.com/VihangaDev/doclk-channel-watcher" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://github.com/VihangaDev/doclk-channel-watcher/tree/main/docs" target="_blank" rel="noreferrer">Docs</a>
+          </div>
         </div>
 
-        <form class="search-form" id="doctor-search-form">
-          <label for="doctor-query">Doctor search</label>
-          <div class="input-row">
-            <input
-              id="doctor-query"
-              name="doctor"
-              type="search"
-              autocomplete="off"
-              list="doctor-suggestions"
-              placeholder="Kapila Ranasinghe"
-              required
-            >
-            <button type="submit">Search</button>
+        <div class="control-panel">
+          <form class="search-form" id="doctor-search-form">
+            <label for="doctor-query">Doctor search</label>
+            <div class="input-row">
+              <input
+                id="doctor-query"
+                name="doctor"
+                type="search"
+                autocomplete="off"
+                list="doctor-suggestions"
+                placeholder="Kapila Ranasinghe"
+                required
+              >
+              <button type="submit">Search</button>
+            </div>
+            <datalist id="doctor-suggestions"></datalist>
+          </form>
+
+          <div class="hospital-filter" id="hospital-filter" hidden></div>
+
+          <form class="watch-form compact-form" id="watch-form">
+            <label for="channel-url">Direct Doc.lk channel URL</label>
+            <div class="input-row">
+              <input id="channel-url" name="url" type="url" inputmode="url" placeholder="https://www.doc.lk/channel/31317">
+              <button type="submit">Check</button>
+            </div>
+          </form>
+
+          <div class="actions">
+            <button id="subscribe-button" type="button">Telegram alerts</button>
+            <a id="telegram-link" class="telegram-link" href="#" target="_blank" rel="noreferrer" hidden>Open Telegram</a>
           </div>
-          <datalist id="doctor-suggestions"></datalist>
-        </form>
-
-        <div class="hospital-filter" id="hospital-filter" hidden></div>
-
-        <form class="watch-form compact-form" id="watch-form">
-          <label for="channel-url">Or check a direct Doc.lk channel URL</label>
-          <div class="input-row">
-            <input id="channel-url" name="url" type="url" inputmode="url" placeholder="https://www.doc.lk/channel/31317">
-            <button type="submit">Check</button>
-          </div>
-        </form>
-
-        <div class="actions">
-          <button id="subscribe-button" type="button">Telegram alerts</button>
-          <a id="telegram-link" class="telegram-link" href="#" target="_blank" rel="noreferrer" hidden>Open Telegram</a>
         </div>
 
         <section class="status-panel" id="status-panel" aria-live="polite">
           <div class="empty-state">
-            <strong>Search a doctor or paste a channel URL.</strong>
-            <span>Choose All or a hospital, then inspect sessions and subscribe.</span>
+            <strong>No channel selected</strong>
+            <span>Waiting for a Doc.lk channel.</span>
           </div>
         </section>
       </section>
@@ -74,8 +80,12 @@
           <span>Channels</span>
           <strong id="channel-count">0</strong>
         </div>
-        <div class="note">
-          Telegram opens only after a user confirms the bot subscription. Send /stop in Telegram to unsubscribe.
+        <div class="metric">
+          <span>Telegram</span>
+          <strong id="telegram-state">Checking</strong>
+        </div>
+        <div class="note" id="service-note">
+          Subscription activation depends on the configured Telegram bot.
         </div>
       </aside>
     </main>

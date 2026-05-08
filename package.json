@@ -1,6 +1,6 @@
 {
   "name": "doclk-channel-watcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Monitor Doc.lk doctor channel pages and notify Telegram when appointments open.",
   "type": "module",
   "license": "MIT",

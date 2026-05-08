@@ -31,6 +31,12 @@ Open:
 http://localhost:3000
 ```
 
+For a search-only local demo without Telegram:
+
+```bash
+PORT=3000 TELEGRAM_BOT_TOKEN= TELEGRAM_POLLING=false npm run web
+```
+
 Try searching:
 
 ```text

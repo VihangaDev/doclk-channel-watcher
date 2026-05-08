@@ -83,6 +83,37 @@ Then set:
 PUBLIC_BASE_URL=https://watcher.example.com
 ```
 
+## Search-Only Demo
+
+Use this when you want a public preview without Telegram subscriptions:
+
+```bash
+PORT=3000 TELEGRAM_BOT_TOKEN= TELEGRAM_POLLING=false npm run web
+```
+
+The website can search doctors and check sessions. It reports demo mode in `/api/health` and disables Telegram subscription controls.
+
+This still needs a Node.js server. A static host such as GitHub Pages cannot run the backend routes that talk to Doc.lk.
+
+## Usable Public Alerts
+
+Use this when people should receive Telegram notifications from the website:
+
+```bash
+PORT=3000
+PUBLIC_BASE_URL=https://watcher.example.com
+TELEGRAM_BOT_TOKEN=123456:your-bot-token
+TELEGRAM_BOT_USERNAME=your_bot_username
+npm run web
+```
+
+Before opening the service publicly:
+
+- Use a fresh Telegram bot token.
+- Put the app behind HTTPS.
+- Keep `CHECK_INTERVAL_SECONDS` reasonable.
+- Move subscription storage to SQLite or Postgres if usage grows beyond a small community.
+
 ## Recommended Production Notes
 
 - Keep `CHECK_INTERVAL_SECONDS` reasonable.

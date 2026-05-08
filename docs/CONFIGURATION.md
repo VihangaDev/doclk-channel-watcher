@@ -24,11 +24,13 @@ Configuration is read from environment variables. For local development, copy `.
 | `PUBLIC_BASE_URL` | No | | Public website URL when behind a reverse proxy |
 | `TELEGRAM_BOT_TOKEN` | Yes for subscriptions | | Telegram bot token |
 | `TELEGRAM_BOT_USERNAME` | No | fetched from Telegram | Bot username used to create subscription links |
-| `TELEGRAM_POLLING` | No | `true` | Set to `false` only for local UI testing with a fake token |
+| `TELEGRAM_POLLING` | No | `true` | Set to `false` for search-only demos or local UI testing |
 | `SUBSCRIPTION_FILE` | No | `.state/subscriptions.json` | Community subscription store |
 | `COMMUNITY_STATE_FILE` | No | `.state/community-monitor-state.json` | Community duplicate-alert state |
 | `CHECK_INTERVAL_SECONDS` | No | `60` | Polling interval. Minimum enforced value is 15 seconds |
 | `FETCH_TIMEOUT_SECONDS` | No | `20` | Timeout for loading Doc.lk pages |
+
+If `TELEGRAM_BOT_TOKEN` is empty in community website mode, the website still allows doctor search and direct channel checks. Telegram subscription controls are disabled and `/api/health` reports demo mode.
 
 ## URL Format
 

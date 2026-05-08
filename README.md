@@ -2,10 +2,22 @@
 
 [![CI](https://github.com/VihangaDev/doclk-channel-watcher/actions/workflows/ci.yml/badge.svg)](https://github.com/VihangaDev/doclk-channel-watcher/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-2f8b57.svg)](package.json)
+[![Telegram alerts](https://img.shields.io/badge/Telegram-alerts-345f95.svg)](docs/TELEGRAM.md)
 
 Self-hosted Doc.lk / Doc990 doctor availability watcher with Telegram alerts.
 
 Doc.lk sessions can move between available, full, canceled, holiday, and contact-hospital states. This project checks channel pages on a schedule and sends a Telegram message when a bookable session appears.
+
+## Screenshots
+
+Doctor search with hospital filtering:
+
+![Doctor search and hospital filter](docs/assets/doctor-search.png)
+
+Session availability check:
+
+![Session availability results](docs/assets/session-results.png)
 
 ## Features
 
@@ -37,6 +49,12 @@ Open:
 
 ```text
 http://localhost:3000
+```
+
+Run the website in search-only demo mode:
+
+```bash
+PORT=3000 TELEGRAM_BOT_TOKEN= TELEGRAM_POLLING=false npm run web
 ```
 
 Run a one-off channel check:
@@ -85,6 +103,30 @@ The website flow is:
 6. Receive alerts when that channel gets a new bookable session.
 
 Telegram requires users to opt in. A bot cannot message people until they open the bot first.
+
+### Public Demo
+
+This app needs a Node.js backend. GitHub Pages alone is not enough for a working demo.
+
+Search-only demo:
+
+```bash
+PORT=3000 TELEGRAM_BOT_TOKEN= TELEGRAM_POLLING=false npm run web
+```
+
+This enables doctor search and session checks, while Telegram subscription controls stay disabled.
+
+Usable alert service:
+
+```bash
+PORT=3000
+PUBLIC_BASE_URL=https://watcher.example.com
+TELEGRAM_BOT_TOKEN=123456:your-bot-token
+TELEGRAM_BOT_USERNAME=your_bot_username
+npm run web
+```
+
+Use HTTPS and a fresh Telegram bot token before opening a public service.
 
 ## Documentation
 
