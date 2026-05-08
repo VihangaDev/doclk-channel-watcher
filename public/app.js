@@ -1,0 +1,128 @@
+const form = document.querySelector("#watch-form");
+const input = document.querySelector("#channel-url");
+const panel = document.querySelector("#status-panel");
+const subscribeButton = document.querySelector("#subscribe-button");
+const telegramLink = document.querySelector("#telegram-link");
+const serviceState = document.querySelector("#service-state");
+const subscriberCount = document.querySelector("#subscriber-count");
+const channelCount = document.querySelector("#channel-count");
+
+let lastUrl = "";
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  lastUrl = input.value.trim();
+  telegramLink.hidden = true;
+  await checkChannel(lastUrl);
+});
+
+subscribeButton.addEventListener("click", async () => {
+  const url = input.value.trim() || lastUrl;
+  if (!url) {
+    renderError("Enter a Doc.lk channel URL first.");
+    return;
+  }
+
+  subscribeButton.disabled = true;
+  subscribeButton.textContent = "Creating link";
+
+  try {
+    const response = await fetch("/api/subscriptions", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload.error || "Unable to create Telegram link");
+    }
+
+    telegramLink.href = payload.telegramUrl;
+    telegramLink.hidden = false;
+    telegramLink.focus();
+  } catch (error) {
+    renderError(error.message);
+  } finally {
+    subscribeButton.disabled = false;
+    subscribeButton.textContent = "Telegram alerts";
+  }
+});
+
+async function checkChannel(url) {
+  panel.innerHTML = `<div class="empty-state"><strong>Checking Doc.lk now</strong><span>${escapeHtml(url)}</span></div>`;
+
+  try {
+    const response = await fetch(`/api/check?url=${encodeURIComponent(url)}`);
+    const report = await response.json();
+    if (!response.ok) {
+      throw new Error(report.error || "Unable to check channel");
+    }
+    renderReport(report);
+  } catch (error) {
+    renderError(error.message);
+  }
+}
+
+async function refreshHealth() {
+  try {
+    const response = await fetch("/api/health");
+    const payload = await response.json();
+    serviceState.textContent = payload.ok ? "Online" : "Issue";
+    subscriberCount.textContent = String(payload.activeSubscriptions ?? 0);
+    channelCount.textContent = String(payload.uniqueChannels ?? 0);
+  } catch {
+    serviceState.textContent = "Offline";
+  }
+}
+
+function renderReport(report) {
+  const sessions = [...report.sessions].sort((left, right) => Number(right.open) - Number(left.open));
+  panel.innerHTML = "";
+
+  const summary = document.createElement("div");
+  summary.className = "summary";
+  summary.innerHTML = `
+    <h2>${escapeHtml(report.doctorName || "Doctor")}</h2>
+    <p>${escapeHtml([report.doctorTitle, report.hospital].filter(Boolean).join(" · "))}</p>
+    <p>${report.openCount}/${report.totalSessions} sessions open</p>
+  `;
+  panel.append(summary);
+
+  const list = document.createElement("div");
+  list.className = "session-list";
+  for (const session of sessions) {
+    const item = document.createElement(session.href && session.open ? "a" : "div");
+    item.className = `session ${session.open ? "open" : "blocked"}`;
+    if (session.href && session.open) {
+      item.href = session.href;
+      item.target = "_blank";
+      item.rel = "noreferrer";
+    }
+
+    item.innerHTML = `
+      <div>
+        <strong>${escapeHtml(`${session.date || "Unknown date"} ${session.time || ""}`.trim())}</strong>
+        <span>${escapeHtml(session.activeAppointments ? `Active appointments: ${session.activeAppointments}` : "Active appointments: unknown")}</span>
+      </div>
+      <span class="badge">${escapeHtml(session.status || "Unknown")}</span>
+    `;
+    list.append(item);
+  }
+  panel.append(list);
+}
+
+function renderError(message) {
+  panel.innerHTML = `<div class="error">${escapeHtml(message)}</div>`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+refreshHealth();
+setInterval(refreshHealth, 30000);

@@ -8,6 +8,7 @@
     "doclk-watch": "src/monitor.js"
   },
   "files": [
+    "public",
     "src",
     "launchd",
     "systemd",
@@ -18,6 +19,7 @@
   ],
   "scripts": {
     "check": "node src/monitor.js --once",
+    "web": "node src/community-service.js",
     "start": "node src/monitor.js",
     "telegram:test": "node src/verify-telegram.js",
     "test": "node --test"
@@ -35,7 +37,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0",
-    "dotenv": "^16.4.7"
-  },
-  "devDependencies": {}
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1"
+  }
 }

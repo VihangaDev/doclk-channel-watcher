@@ -4,7 +4,8 @@ import "dotenv/config";
 import { setTimeout as sleep } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
 
-import { fetchChannelPage, formatSession, parseChannelPage } from "./doclk.js";
+import { fetchChannelPage, parseChannelPage } from "./doclk.js";
+import { buildOpenMessage } from "./messages.js";
 import { readState, writeState } from "./state.js";
 import { sendTelegramMessage } from "./telegram.js";
 
@@ -128,17 +129,6 @@ async function checkUrl(config, url, channelState) {
   }
 
   return report;
-}
-
-function buildOpenMessage(report, sessions) {
-  const doctor = [report.doctorName, report.doctorTitle].filter(Boolean).join(" - ");
-  const heading = [
-    "Doctor appointment opened",
-    doctor || null,
-    report.hospital || null,
-  ].filter(Boolean).join("\n");
-
-  return `${heading}\n\n${sessions.map(formatSession).join("\n\n")}\n\nPage: ${report.pageUrl}`;
 }
 
 async function notify(config, text) {

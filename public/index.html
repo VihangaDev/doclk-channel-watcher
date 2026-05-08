@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Doc.lk Channel Watcher</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="workspace" aria-labelledby="page-title">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <p class="eyebrow">Doc.lk availability alerts</p>
+            <h1 id="page-title">Channel Watcher</h1>
+          </div>
+        </div>
+
+        <form class="watch-form" id="watch-form">
+          <label for="channel-url">Doc.lk channel URL</label>
+          <div class="input-row">
+            <input
+              id="channel-url"
+              name="url"
+              type="url"
+              inputmode="url"
+              placeholder="https://www.doc.lk/channel/31317"
+              required
+            >
+            <button type="submit">Check</button>
+          </div>
+        </form>
+
+        <div class="actions">
+          <button id="subscribe-button" type="button">Telegram alerts</button>
+          <a id="telegram-link" class="telegram-link" href="#" target="_blank" rel="noreferrer" hidden>Open Telegram</a>
+        </div>
+
+        <section class="status-panel" id="status-panel" aria-live="polite">
+          <div class="empty-state">
+            <strong>Paste a channel URL to inspect live sessions.</strong>
+            <span>Open sessions appear at the top with booking links.</span>
+          </div>
+        </section>
+      </section>
+
+      <aside class="side-panel" aria-label="Service state">
+        <div class="metric">
+          <span>Service</span>
+          <strong id="service-state">Checking</strong>
+        </div>
+        <div class="metric">
+          <span>Subscribers</span>
+          <strong id="subscriber-count">0</strong>
+        </div>
+        <div class="metric">
+          <span>Channels</span>
+          <strong id="channel-count">0</strong>
+        </div>
+        <div class="note">
+          Telegram opens only after a user confirms the bot subscription. Send /stop in Telegram to unsubscribe.
+        </div>
+      </aside>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
