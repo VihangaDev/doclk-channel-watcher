@@ -21,17 +21,29 @@
           </div>
         </div>
 
-        <form class="watch-form" id="watch-form">
-          <label for="channel-url">Doc.lk channel URL</label>
+        <form class="search-form" id="doctor-search-form">
+          <label for="doctor-query">Doctor search</label>
           <div class="input-row">
             <input
-              id="channel-url"
-              name="url"
-              type="url"
-              inputmode="url"
-              placeholder="https://www.doc.lk/channel/31317"
+              id="doctor-query"
+              name="doctor"
+              type="search"
+              autocomplete="off"
+              list="doctor-suggestions"
+              placeholder="Kapila Ranasinghe"
               required
             >
+            <button type="submit">Search</button>
+          </div>
+          <datalist id="doctor-suggestions"></datalist>
+        </form>
+
+        <div class="hospital-filter" id="hospital-filter" hidden></div>
+
+        <form class="watch-form compact-form" id="watch-form">
+          <label for="channel-url">Or check a direct Doc.lk channel URL</label>
+          <div class="input-row">
+            <input id="channel-url" name="url" type="url" inputmode="url" placeholder="https://www.doc.lk/channel/31317">
             <button type="submit">Check</button>
           </div>
         </form>
@@ -43,8 +55,8 @@
 
         <section class="status-panel" id="status-panel" aria-live="polite">
           <div class="empty-state">
-            <strong>Paste a channel URL to inspect live sessions.</strong>
-            <span>Open sessions appear at the top with booking links.</span>
+            <strong>Search a doctor or paste a channel URL.</strong>
+            <span>Choose All or a hospital, then inspect sessions and subscribe.</span>
           </div>
         </section>
       </section>

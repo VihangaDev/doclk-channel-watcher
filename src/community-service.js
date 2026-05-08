@@ -8,6 +8,12 @@ import { setTimeout as sleep } from "node:timers/promises";
 
 import { fetchChannelPage, parseChannelPage } from "./doclk.js";
 import { buildOpenMessage, buildSubscriptionActiveMessage } from "./messages.js";
+import {
+  fetchDoctorSearch,
+  fetchDoctorSuggestions,
+  fetchHospitals,
+  parseDoctorSearchPage,
+} from "./search.js";
 import { readState, writeState } from "./state.js";
 import {
   activatePendingSubscription,
@@ -61,6 +67,51 @@ export function createApp(config) {
       response.json(toPublicReport(report));
     } catch (error) {
       response.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/hospitals", async (_request, response) => {
+    try {
+      const hospitals = await fetchHospitals({
+        fetchImpl: config.fetchImpl || fetch,
+        timeoutMs: config.fetchTimeoutMs,
+      });
+      response.json({ hospitals });
+    } catch (error) {
+      response.status(502).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/doctor-suggestions", async (request, response) => {
+    try {
+      const suggestions = await fetchDoctorSuggestions({
+        doctor: request.query.doctor,
+        fetchImpl: config.fetchImpl || fetch,
+        timeoutMs: config.fetchTimeoutMs,
+      });
+      response.json({ suggestions });
+    } catch (error) {
+      response.status(502).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/search-doctors", async (request, response) => {
+    try {
+      const doctor = String(request.query.doctor || "").trim();
+      if (doctor.length < 2) {
+        response.status(400).json({ error: "Enter at least 2 characters to search doctors" });
+        return;
+      }
+
+      const html = await fetchDoctorSearch({
+        doctor,
+        hospital: request.query.hospital || "0",
+        fetchImpl: config.fetchImpl || fetch,
+        timeoutMs: config.fetchTimeoutMs,
+      });
+      response.json(parseDoctorSearchPage(html));
+    } catch (error) {
+      response.status(502).json({ error: error.message });
     }
   });
 

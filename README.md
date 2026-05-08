@@ -16,6 +16,7 @@ Telegram requires user opt-in. A bot cannot message random people directly. In c
 ## Features
 
 - Watches one or many Doc.lk channel URLs
+- Searches doctors through Doc.lk search and filters results by hospital
 - Detects real open sessions from the rendered session rows
 - Sends Telegram alerts only when a session newly opens
 - Persists state to avoid repeated duplicate alerts
@@ -93,6 +94,8 @@ npm run web
 
 Open `http://localhost:3000`, paste a Doc.lk channel URL, check live sessions, then choose Telegram alerts.
 
+The website also supports doctor search. Search by doctor name, choose **All** or one of the returned hospitals, then open the matching channel to inspect sessions or subscribe.
+
 ## Find Telegram Values
 
 Create a bot by messaging `@BotFather` in Telegram. For community mode, use the bot username from BotFather as `TELEGRAM_BOT_USERNAME`.
@@ -132,12 +135,13 @@ npm run telegram:test
 
 ## How Community Notifications Work
 
-1. A user checks a Doc.lk channel URL on the website.
-2. The website creates a short pending subscription code.
-3. The user opens Telegram with `/start <code>`.
-4. The bot activates the subscription and stores the user's chat id.
-5. The service monitors each unique channel URL once per interval.
-6. When a new bookable session appears, every subscriber for that channel gets the alert.
+1. A user searches a doctor or checks a Doc.lk channel URL on the website.
+2. If searching, the user selects **All** or a specific hospital and opens the correct channel.
+3. The website creates a short pending subscription code.
+4. The user opens Telegram with `/start <code>`.
+5. The bot activates the subscription and stores the user's chat id.
+6. The service monitors each unique channel URL once per interval.
+7. When a new bookable session appears, every subscriber for that channel gets the alert.
 
 The default storage is JSON files under `.state`. That keeps self-hosting simple. For a larger public service, replace the file store with Postgres or SQLite and add moderation/admin tools.
 
@@ -183,6 +187,8 @@ launchctl start com.doclk.channel-watcher
 ## How Detection Works
 
 The watcher parses every `.ui-component-sessions` row on a Doc.lk channel page. A session is treated as open when its `Book` button is enabled and has a real booking URL. Known blocked statuses such as `Session Full`, `Canceled`, `Contact Hospital`, and `Holiday` are ignored.
+
+Doctor search uses Doc.lk's public search flow: `/search?doctor=...&hospital=0&specialization=0&date=` for results and `/doctors/suggestions` for autocomplete. Results are parsed from `.doctor_channel` rows and grouped by hospital.
 
 State is stored by channel URL, so an alert is sent when a session changes from closed to open. Existing open sessions do not generate repeated alerts every minute.
 
