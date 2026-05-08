@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A self-hosted Doc.lk channel watcher with doctor search, hospital filtering, and Telegram alerts."
+    >
+    <title>Doc.lk Channel Watcher</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef4f2;
+        --surface: #ffffff;
+        --ink: #111918;
+        --muted: #5b6b67;
+        --line: #d7e2de;
+        --primary: #0b6f68;
+        --primary-dark: #084f4b;
+        --accent: #c95f38;
+        --blue: #345f95;
+        --shadow: 0 22px 54px rgba(17, 25, 24, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(238, 244, 242, 0.96)),
+          linear-gradient(90deg, rgba(11, 111, 104, 0.06) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(52, 95, 149, 0.05) 1px, transparent 1px),
+          var(--bg);
+        background-size: auto, 36px 36px, 36px 36px, auto;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1120px, calc(100vw - 32px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .mark {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(11, 111, 104, 0.24);
+        border-radius: 8px;
+        background: var(--surface);
+        display: grid;
+        place-items: center;
+        position: relative;
+        box-shadow: 0 12px 30px rgba(17, 25, 24, 0.08);
+      }
+
+      .mark::before,
+      .mark::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        background: var(--primary);
+      }
+
+      .mark::before {
+        width: 23px;
+        height: 7px;
+      }
+
+      .mark::after {
+        width: 7px;
+        height: 23px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .nav-links a,
+      .button {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 0 14px;
+        background: rgba(255, 255, 255, 0.74);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--primary-dark);
+        background: var(--primary);
+        color: white;
+      }
+
+      .button.secondary {
+        border-color: #294f7f;
+        background: var(--blue);
+        color: white;
+      }
+
+      .hero {
+        min-height: calc(100vh - 76px);
+        display: grid;
+        grid-template-columns: minmax(0, 0.94fr) minmax(340px, 1.06fr);
+        gap: 38px;
+        align-items: center;
+        padding: 42px 0 76px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(3.4rem, 8vw, 7.2rem);
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 58ch;
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2vw, 1.28rem);
+        line-height: 1.55;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .proof {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 34px;
+      }
+
+      .proof div,
+      .panel,
+      .shot,
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: var(--shadow);
+      }
+
+      .proof div {
+        padding: 16px;
+      }
+
+      .proof strong {
+        display: block;
+        font-size: 1.15rem;
+      }
+
+      .proof span {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .hero-media {
+        display: grid;
+        gap: 18px;
+      }
+
+      .shot {
+        overflow: hidden;
+      }
+
+      .shot img {
+        width: 100%;
+        display: block;
+      }
+
+      .shot.small {
+        width: min(76%, 560px);
+        justify-self: end;
+        margin-top: -54px;
+      }
+
+      .section {
+        padding: 54px 0;
+      }
+
+      .section-title {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1;
+      }
+
+      .section-title p {
+        max-width: 64ch;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .step {
+        padding: 20px;
+      }
+
+      .step span {
+        color: var(--primary);
+        font-weight: 800;
+      }
+
+      .step h3 {
+        margin: 12px 0 8px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .panel {
+        padding: 24px;
+      }
+
+      .code {
+        margin: 16px 0 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #111918;
+        color: #eef4f2;
+        overflow: auto;
+      }
+
+      pre {
+        margin: 0;
+        padding: 18px;
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      footer {
+        padding: 36px 0 46px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .shot.small {
+          width: 100%;
+          margin-top: 0;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100% - 20px, 1120px);
+        }
+
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px 0;
+        }
+
+        h1 {
+          font-size: clamp(2.8rem, 17vw, 4.6rem);
+        }
+
+        .proof {
+          grid-template-columns: 1fr;
+        }
+
+        .actions .button,
+        .nav-links a {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shell nav">
+      <a class="brand" href="./" aria-label="Doc.lk Channel Watcher home">
+        <span class="mark" aria-hidden="true"><span class="dot"></span></span>
+        <span>Doc.lk Channel Watcher</span>
+      </a>
+      <nav class="nav-links" aria-label="Project links">
+        <a href="https://github.com/VihangaDev/doclk-channel-watcher">GitHub</a>
+        <a href="https://github.com/VihangaDev/doclk-channel-watcher/tree/main/docs">Docs</a>
+        <a href="https://github.com/VihangaDev/doclk-channel-watcher/releases/latest">Release</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shell hero">
+        <div>
+          <h1>Doctor availability alerts for Doc.lk.</h1>
+          <p class="lead">
+            Search doctors, filter by hospital, check channel sessions, and run Telegram alerts when a bookable appointment appears.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/VihangaDev/doclk-channel-watcher">View on GitHub</a>
+            <a class="button secondary" href="https://github.com/VihangaDev/doclk-channel-watcher/blob/main/docs/DEPLOYMENT.md">Deploy guide</a>
+          </div>
+          <div class="proof" aria-label="Project highlights">
+            <div>
+              <strong>Doctor search</strong>
+              <span>Uses Doc.lk search results and hospital grouping.</span>
+            </div>
+            <div>
+              <strong>Telegram alerts</strong>
+              <span>Opt-in subscriptions through a Telegram bot.</span>
+            </div>
+            <div>
+              <strong>Self-hosted</strong>
+              <span>Runs on Node.js with simple JSON storage.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-media" aria-label="Application screenshots">
+          <figure class="shot">
+            <img src="./assets/doctor-search.png" alt="Doctor search with hospital filter">
+          </figure>
+          <figure class="shot small">
+            <img src="./assets/session-results.png" alt="Session availability results">
+          </figure>
+        </div>
+      </section>
+
+      <section class="shell section" id="how-it-works">
+        <div class="section-title">
+          <h2>How it works</h2>
+          <p>
+            The project page on GitHub is static. The real checker runs on Node.js because it has to call Doc.lk routes and manage Telegram subscription state.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="step">
+            <span>01</span>
+            <h3>Find a channel</h3>
+            <p>Search a doctor or paste a direct Doc.lk channel URL.</p>
+          </article>
+          <article class="step">
+            <span>02</span>
+            <h3>Read sessions</h3>
+            <p>The parser treats a session as open only when the booking button is usable.</p>
+          </article>
+          <article class="step">
+            <span>03</span>
+            <h3>Notify subscribers</h3>
+            <p>The monitor sends Telegram alerts for newly open bookable sessions.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="shell section" id="deploy">
+        <div class="panel">
+          <div class="section-title">
+            <h2>Run a search-only demo</h2>
+            <p>
+              This is the safest public preview mode. It allows search and session checks, while Telegram subscriptions stay disabled until you configure a bot token on a backend server.
+            </p>
+          </div>
+          <div class="code">
+            <pre><code>git clone https://github.com/VihangaDev/doclk-channel-watcher.git
+cd doclk-channel-watcher
+npm install
+PORT=3000 TELEGRAM_BOT_TOKEN= TELEGRAM_POLLING=false npm run web</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shell">
+      Independent open-source project. Not affiliated with Doc.lk, Doc990, Dialog Axiata, any hospital, or any medical provider.
+    </footer>
+  </body>
+</html>

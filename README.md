@@ -9,6 +9,8 @@ Self-hosted Doc.lk / Doc990 doctor availability watcher with Telegram alerts.
 
 Doc.lk sessions can move between available, full, canceled, holiday, and contact-hospital states. This project checks channel pages on a schedule and sends a Telegram message when a bookable session appears.
 
+Project site: https://vihangadev.github.io/doclk-channel-watcher/
+
 ## Screenshots
 
 Doctor search with hospital filtering:
