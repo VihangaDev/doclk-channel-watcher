@@ -116,8 +116,15 @@ export async function runChecks(config) {
 }
 
 async function checkUrl(config, url, channelState) {
-  const html = await fetchChannelPage(url, { timeoutMs: config.fetchTimeoutMs });
+  const html = await fetchChannelPage(url, {
+    fetchImpl: config.fetchImpl || fetch,
+    timeoutMs: config.fetchTimeoutMs,
+  });
   const report = parseChannelPage(html, url);
+  if (report.sessions.length === 0) {
+    throw new Error(`No session rows found for ${url}`);
+  }
+
   const previousOpenIds = new Set(channelState.openSessionIds || []);
   const newlyOpenSessions = report.openSessions.filter((session) => !previousOpenIds.has(session.id));
 

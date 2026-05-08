@@ -102,8 +102,15 @@ async function main() {
 }
 
 async function fetchReport(url, config) {
-  const html = await fetchChannelPage(url, { timeoutMs: config.fetchTimeoutMs });
-  return parseChannelPage(html, url);
+  const html = await fetchChannelPage(url, {
+    fetchImpl: config.fetchImpl || fetch,
+    timeoutMs: config.fetchTimeoutMs,
+  });
+  const report = parseChannelPage(html, url);
+  if (report.sessions.length === 0) {
+    throw new Error(`No session rows found for ${url}`);
+  }
+  return report;
 }
 
 async function pollTelegram(config) {
